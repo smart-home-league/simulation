@@ -1,0 +1,337 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/bedroom/protos/Bed.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/chairs/protos/Chair.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/living_room_furniture/protos/Armchair.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/paintings/protos/LandscapePainting.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "../protos/Config.proto"
+IMPORTABLE EXTERNPROTO "../protos/Create.proto"
+IMPORTABLE EXTERNPROTO "../protos/BatteryPad.proto"
+IMPORTABLE EXTERNPROTO "../protos/BoostPad.proto"
+IMPORTABLE EXTERNPROTO "../protos/RelocatePad.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/living_room_furniture/protos/Sofa.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/apartment_structure/protos/Radiator.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/bathroom/protos/Toilet.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/kitchen/fridge/protos/Fridge.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/kitchen/oven/protos/Oven.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/bathroom/protos/WashingMachine.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/bathroom/protos/BathroomSink.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/bathroom/protos/Bathtube.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/television/protos/Television.proto"
+
+WorldInfo {
+  info [
+    "This world is part of the SmartHome League simulation, where autonomous robots must efficiently clean or navigate a virtual home environment. "
+    "The challenge involves avoiding obstacles, handling various room configurations, and performing assigned tasks within a realistic household scenario."
+  ]
+  title "SmartHome"
+  physics "create_2d"
+  contactProperties [
+    ContactProperties {
+      material1 "create"
+      rollingFriction 0.001 0.001 0.05
+      bounce 0
+    }
+    ContactProperties {
+      rollingFriction 0.001 0.001 0.02
+      bounce 0
+    }
+  ]
+}
+Viewpoint {
+  orientation 0.577350227625311 -0.5773507541296024 -0.5773498258135886 4.1887877751954585
+  position 1.879122813234547e-05 3.0467340597875592e-05 47.31355878168618
+}
+DEF CONFIG Config {
+  subleague "U19"
+  batteryPositions [
+    0 -1 0.0442
+    -6.5 5.5 0.0442
+  ]
+  relocatePositions [
+    3.5 6 0.0442
+    -7 -1 0.0442
+    7 -1 0.0442
+    3.5 -6 0.0442
+  ]
+}
+TexturedBackground {
+  luminosity 10
+  skyColor [
+    1 1 1
+  ]
+}
+DEF HOUSE Group {
+  children [
+    Television {
+      translation 3.33 -9.79999 1.54
+      rotation 0 0 1 1.5708
+    }
+    Bathtube {
+      translation 8.84 9.31 0
+      rotation 0 0 1 -1.5707953071795862
+    }
+    BathroomSink {
+      translation 9.79 4.34996 0.99
+      rotation 0 0 1 -3.1415853071795863
+      name "sink(1)"
+    }
+    BathroomSink {
+      translation -9.79 -6.28004 0.83
+      rotation 0 0 1 4.692820414042842e-06
+    }
+    Table {
+      translation -6.56632 -6.77254 0
+      rotation 0 0 1 3.14159
+      name "table(3)"
+    }
+    Chair {
+      translation -6.08771 -6.77977 0
+      rotation 0 0 1 -3.0221453071795863
+      name "chair(2)"
+    }
+    WashingMachine {
+      translation -4.16997 -9.42 0.53
+      rotation 0 0 1 1.5708
+      name "whashing machine(1)"
+    }
+    WashingMachine {
+      translation -3.39997 -9.42 0.53
+      rotation 0 0 1 1.5708
+    }
+    Oven {
+      hidden position_0_0 -0.00010008481143135643
+      hidden translation_1 0.2499999997495757 0 0.19000500424056324
+      hidden rotation_1 0 -1 0 0.00010008481142612245
+      translation -3.26 -4.72 -8.91958e-07
+      rotation -2.39745e-09 5.33627e-08 -1 3.14158
+      name "oven(2)"
+    }
+    Oven {
+      hidden position_0_0 -0.00010008481143135504
+      hidden translation_1 0.24999999974957576 0 0.1900050042405632
+      hidden rotation_1 0 -0.9999999999999999 0 0.00010008481142612245
+      translation -3.26 -4.32 9.91054e-08
+      rotation -2.39745e-09 5.33627e-08 -1 3.14158
+      name "oven(1)"
+    }
+    Oven {
+      hidden position_0_0 -0.00010008505850251283
+      hidden translation_1 0.2499999997495745 0 0.19000500425291653
+      hidden rotation_1 0 -1 0 0.00010008505990503285
+      translation -3.26 -3.91 0
+      rotation -7.83174e-07 1.66311e-06 -1 3.14158
+    }
+    Fridge {
+      hidden position_0_0 -0.0010538158736975388
+      hidden position_0_1 0.001053816292516428
+      hidden rotation_1 0 0 -1 0.0010538158735549721
+      hidden rotation_2 0 0 1 0.0010538162924370732
+      translation -9.44 -9.44 0
+    }
+    Sofa {
+      translation 7.31 -6.2 0
+      rotation 0 0 1 3.14159
+      name "sofa(3)"
+    }
+    Sofa {
+      translation -0.51 -6.25 0
+      rotation 0 0 1 1.01459e-06
+      name "sofa(2)"
+    }
+    Sofa {
+      translation 1.76 -3.3 0
+      rotation 0 0 1 -1.5707953071795862
+      name "sofa(1)"
+    }
+    LandscapePainting {
+      translation 6.58269 5.73692 1.5
+      rotation 0 0 1 -3.1415853071795863
+      name "landscape painting(1)"
+    }
+    Wall {
+      translation -5.14 -3.58 0
+      rotation 0 0 1 -1.5707953071795862
+      name "wall(9)"
+      size 0.2 4.3 2.4
+    }
+    Wall {
+      translation -2.91 -6.645 0
+      name "wall(8)"
+      size 0.2 6.33 2.4
+    }
+    Toilet {
+      translation 7.1 1.97 0
+      rotation 0 0 1 1.5708
+    }
+    Chair {
+      translation 4.45468 2.54351 0
+      rotation 0 0 1 -1.7131453071795866
+      name "chair(1)"
+    }
+    Table {
+      translation 4.40368 2.10746 0
+      rotation 0 0 1 -1.5707953071795862
+      name "table(1)"
+    }
+    Radiator {
+      translation -6.92 9.74 0.3
+      rotation 0 0 1 -1.5707953071795862
+      name "radiator(1)"
+    }
+    Radiator {
+      translation -7.56 9.74 0.3
+      rotation 0 0 1 -1.5707953071795862
+    }
+    Sofa {
+      translation 5.13 -3.3 0
+      rotation 0 0 1 -1.5707953071795862
+    }
+    Bed {
+      translation -4.05952 7.44085 0
+      rotation 0 0 1 3.1415
+      name "bed(2)"
+    }
+    Bed {
+      translation 0.190493 8.75049 0
+      rotation 0 0 1 -1.5708853071795863
+      name "bed(1)"
+    }
+    Wall {
+      translation 3.64 1.475 0
+      rotation 0 0 1 -1.5707953071795862
+      name "wall(7)"
+      size 0.2 8.85 2.4
+    }
+    Wall {
+      translation 6.7 5.625 0
+      name "wall(1)"
+      size 0.2 8.35 2.4
+    }
+    LandscapePainting {
+      translation -9.76731 5.73692 1.5
+      rotation 0 0 -1 -5.307179586466759e-06
+    }
+    Armchair {
+      translation -2.30698 5.38756 0
+      rotation 0 0 1 0.0284786
+    }
+    Table {
+      translation -1.01521 5.45092 0
+      rotation 0 0 -1 -0.010885307179585801
+      name "table(2)"
+      size 0.8 1.2 0.53
+    }
+    Chair {
+      translation -3.95143 3.30328 0
+      rotation 0 0 -1 -0.11945530717958608
+    }
+    Table {
+      translation -3.52632 3.28746 0
+    }
+    Bed {
+      translation 4.00025 8.73 0
+      rotation 0 0 1 -1.5708853071795863
+    }
+    Wall {
+      translation -5.14 1.54 0
+      rotation 0 0 1 -1.5707953071795862
+      name "wall(6)"
+      size 0.2 4.3 2.4
+    }
+    Wall {
+      translation -2.91 5.625 0
+      name "wall(5)"
+      size 0.2 8.35 2.4
+    }
+    Wall {
+      translation 0 -9.9 0
+      rotation 0 0 1 1.5708
+      name "wall(4)"
+      size 0.2 20 2.4
+    }
+    Wall {
+      translation -9.9 0 0
+      name "wall(3)"
+      size 0.2 20 2.4
+    }
+    Wall {
+      translation 0 9.9 0
+      rotation 0 0 1 1.5708
+      name "wall(2)"
+      size 0.2 20 2.4
+    }
+    Wall {
+      translation 9.9 0 0
+      size 0.2 20 2.4
+    }
+    BatteryPad {
+      translation 0 0 0.0442
+    }
+    BatteryPad {
+      translation -7.5 7.5 0.0442
+      name "BATTERY_PAD(1)"
+    }
+    RelocatePad {
+      translation 3.5 6 0.0442
+    }
+    RelocatePad {
+      translation -7 -1 0.0442
+      name "RELOCATE_PAD(1)"
+    }
+    RelocatePad {
+      translation 7 -1 0.0442
+      name "RELOCATE_PAD(2)"
+    }
+    RelocatePad {
+      translation 3.5 -6 0.0442
+      name "RELOCATE_PAD(3)"
+    }
+  ]
+}
+DEF SUPERVISOR Robot {
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          emissiveColor 1 1 1
+        }
+        texture ImageTexture {
+        }
+      }
+      geometry Plane {
+        size 20 20
+      }
+    }
+    Display {
+      translation 0 0 0.01
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.7 0.6 0.4
+            baseColorMap ImageTexture {
+            }
+            roughness 0.5
+            metalness 0
+          }
+          geometry Plane {
+            size 20 20
+          }
+        }
+      ]
+      name "ground_display"
+      width 512
+      height 512
+    }
+  ]
+  boundingObject Plane {
+    size 20 20
+  }
+  locked TRUE
+  controller "supervisor"
+  supervisor TRUE
+  window "supervisor_window"
+}

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cleaning Challenge Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --accent: #38bdf8;
+        --accent-purple: #818cf8;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --error: #f97373;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html {
+        min-height: 100%;
+        width: 100%;
+        background: radial-gradient(ellipse at top left, #1e293b, #020617 70%);
+      }
+
+      body {
+        min-height: 100vh;
+        width: 100%;
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 630px;
+        height: 100vh;
+        padding: 24px;
+        gap: 16px;
+      }
+
+      .box {
+        background: linear-gradient(145deg, rgba(2, 6, 23, 0.95), rgba(15, 23, 42, 0.9));
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        box-shadow: 0 16px 48px rgba(15, 23, 42, 0.6);
+      }
+
+      .header-box {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+      }
+
+      .header-title {
+        font-size: clamp(18px, 3.5vw, 24px);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header-subleague {
+        font-size: clamp(12px, 2vw, 15px);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--muted);
+      }
+
+      .main-box {
+        flex: 1;
+        min-height: 0;
+        padding: 32px 28px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .main-box::before {
+        content: "";
+        position: absolute;
+        inset: -80px;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 50%),
+          radial-gradient(circle at 100% 0%, rgba(129, 140, 248, 0.12), transparent 50%);
+        pointer-events: none;
+      }
+
+      .content { position: relative; z-index: 1; }
+
+      .score-big {
+        font-size: clamp(48px, 10vw, 96px);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        text-align: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 6px;
+      }
+
+      .score-label {
+        text-align: center;
+        font-size: clamp(12px, 2.5vw, 16px);
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 28px;
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .status-dot.idle {
+        background: #eab308;
+      }
+
+      .status-dot.running {
+        background: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4);
+        animation: status-pulse 1.5s ease-in-out infinite;
+      }
+
+      .status-dot.over {
+        background: #ef4444;
+      }
+
+      @keyframes status-pulse {
+        0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4); }
+        50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.15); }
+      }
+
+      .status-dot-text {
+        font-size: clamp(11px, 1.8vw, 13px);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--muted);
+      }
+
+      .team-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .team-name-big {
+        font-size: clamp(18px, 4vw, 28px);
+        font-weight: 600;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .team-name-big.empty { color: var(--muted); font-weight: 500; }
+
+      .btn-relocate {
+        flex-shrink: 0;
+        padding: 12px 24px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), #0ea5e9);
+        color: #0b1120;
+        font-size: clamp(12px, 2vw, 15px);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        box-shadow: 0 14px 40px rgba(56, 189, 248, 0.5);
+        transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
+      }
+
+      .btn-relocate:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 50px rgba(56, 189, 248, 0.6);
+        filter: brightness(1.08);
+      }
+
+      .btn-relocate:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 120px;
+        width: 120px;
+      }
+
+      .info-value {
+        font-size: clamp(20px, 4vw, 32px);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.2;
+      }
+
+      .info-label {
+        font-size: clamp(10px, 1.8vw, 13px);
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .battery-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: clamp(14px, 2.5vw, 18px);
+        color: var(--muted);
+      }
+
+      .battery-wrap.hidden { display: none; }
+
+      .battery-icon {
+        width: 24px;
+        height: 12px;
+        border: 2px solid currentColor;
+        border-radius: 3px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .battery-icon::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        bottom: 2px;
+        width: calc(var(--fill, 0) * 0.18px);
+        max-width: 18px;
+        border-radius: 2px;
+        background: currentColor;
+      }
+
+      .status-text {
+        font-size: clamp(13px, 2.2vw, 17px);
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .score-log {
+        font-size: clamp(11px, 2vw, 14px);
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .score-log-item {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .score-log-plus { color: #22c55e; }
+      .score-log-minus { color: #ef4444; }
+
+      .room-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .room-stats-grid.hidden { display: none; }
+
+      .room-card {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        padding: 12px;
+        text-align: center;
+      }
+
+      .room-card.current {
+        border-color: var(--accent);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+      }
+
+      .room-card-label {
+        font-size: clamp(10px, 1.6vw, 12px);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .room-card-value {
+        font-size: clamp(16px, 3vw, 22px);
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .room-card-bar {
+        height: 4px;
+        background: rgba(148, 163, 184, 0.2);
+        border-radius: 2px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+
+      .room-card-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+        border-radius: 2px;
+        transition: width 0.2s ease;
+      }
+
+      .nav-box {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0;
+      }
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 14px 28px;
+        border-radius: 999px;
+        border: none;
+        font-size: clamp(13px, 2vw, 16px);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-upload {
+        background: linear-gradient(135deg, var(--accent), #0ea5e9);
+        color: #0b1120;
+        box-shadow: 0 14px 40px rgba(56, 189, 248, 0.5);
+      }
+
+      .btn-upload:hover:not(:disabled) {
+        box-shadow: 0 20px 50px rgba(56, 189, 248, 0.6);
+      }
+
+      .btn-play {
+        background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+        color: #0b1120;
+        padding: 16px 36px;
+        font-size: clamp(14px, 2.2vw, 18px);
+        box-shadow: 0 14px 45px rgba(56, 189, 248, 0.55);
+      }
+
+      .btn-play:hover:not(:disabled) {
+        box-shadow: 0 20px 55px rgba(129, 140, 248, 0.5);
+      }
+
+      .btn-end {
+        background: linear-gradient(135deg, var(--accent-purple), #6366f1);
+        color: white;
+        box-shadow: 0 14px 40px rgba(129, 140, 248, 0.45);
+      }
+
+      .btn-end:hover:not(:disabled) {
+        box-shadow: 0 20px 50px rgba(129, 140, 248, 0.55);
+      }
+
+      .error {
+        color: var(--error);
+        font-size: clamp(11px, 2vw, 14px);
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .hidden-file { position: absolute; width: 0; height: 0; opacity: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="box header-box">
+        <span class="header-title">Smart Home</span>
+        <span id="subleagueEl" class="header-subleague">—</span>
+      </header>
+
+      <main class="box main-box">
+        <div class="content">
+          <h1 id="pointsValue" class="score-big">0</h1>
+          <p class="score-label">Score</p>
+          <div id="statusIndicator" class="status-indicator">
+            <span id="statusDot" class="status-dot idle"></span>
+            <span id="statusDotText" class="status-dot-text">Idle</span>
+          </div>
+
+          <div class="team-row">
+            <span id="teamName" class="team-name-big empty">Not set (set in robot.py)</span>
+            <button id="relocateButton" type="button" class="btn-relocate" disabled>Relocate</button>
+          </div>
+
+          <div class="info-row">
+            <div class="info-item" id="cleaningItem">
+              <span id="percentValue" class="info-value">0.0</span>
+              <span class="info-label">Cleaning %</span>
+            </div>
+            <div class="info-item" id="timeItem">
+              <span id="timeValue" class="info-value">—</span>
+              <span class="info-label">Time left</span>
+            </div>
+            <div id="batteryWrap" class="info-item battery-wrap hidden">
+              <span class="info-value" style="display: flex; align-items: center; gap: 8px;">
+                <span class="battery-icon" id="batteryIcon"></span>
+                <span id="batteryValue">0%</span>
+              </span>
+              <span class="info-label">Battery</span>
+            </div>
+          </div>
+
+          <div id="roomStatsBlock" class="room-stats-grid hidden"></div>
+
+          <div id="statusText" class="status-text">Waiting for run to start.</div>
+
+          <div id="scoreLogBlock" class="score-log" style="display: none;"></div>
+
+          <div id="errorBox" class="error" style="display: none;"></div>
+        </div>
+      </main>
+
+      <nav class="nav-box">
+        <input type="file" id="codeFile" class="hidden-file" accept=".py,.zip" />
+        <button id="uploadButton" type="button" class="btn btn-upload">Upload</button>
+        <button id="actionButton" type="button" class="btn btn-play" disabled style="display: none;">Play</button>
+      </nav>
+    </div>
+
+    <script>
+      (function () {
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: "dashboard-loaded" }, "*");
+        }
+        const wsScheme = location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = wsScheme + "//" + location.host + "/ws";
+        let ws = null;
+        let reconnectDelay = 1000;
+        const maxReconnectDelay = 10000;
+
+        function updateBatteryIcon(pct) {
+          const el = document.getElementById("batteryIcon");
+          if (!el) return;
+          el.style.setProperty("--fill", Math.max(0, Math.min(100, pct)));
+        }
+
+        function applyState(data) {
+          const pointsEl = document.getElementById("pointsValue");
+          const teamEl = document.getElementById("teamName");
+          const relocateBtn = document.getElementById("relocateButton");
+          const percentEl = document.getElementById("percentValue");
+          const timeEl = document.getElementById("timeValue");
+          const batteryWrap = document.getElementById("batteryWrap");
+          const batteryVal = document.getElementById("batteryValue");
+          const statusEl = document.getElementById("statusText");
+          const scoreLogBlock = document.getElementById("scoreLogBlock");
+          const roomStatsBlock = document.getElementById("roomStatsBlock");
+          const actionBtn = document.getElementById("actionButton");
+
+          if (!pointsEl) return;
+
+          const subleagueEl = document.getElementById("subleagueEl");
+          if (subleagueEl) {
+            subleagueEl.textContent = data.subleague && String(data.subleague).trim()
+              ? data.subleague
+              : "—";
+          }
+
+          pointsEl.textContent = data.points ?? 0;
+
+          const teamName = data.teamName && String(data.teamName).trim()
+            ? data.teamName
+            : "Team Name";
+          teamEl.textContent = teamName;
+          teamEl.classList.toggle("empty", !(data.teamName && String(data.teamName).trim()));
+
+          percentEl.textContent = (data.percent != null ? data.percent : 0).toFixed(1);
+          const remaining = data.remainingSeconds ?? 0;
+          timeEl.textContent = remaining > 0 ? Math.floor(remaining) + " s" : "—";
+
+          if (data.battery != null) {
+            batteryWrap.classList.remove("hidden");
+            batteryVal.textContent = (data.battery || 0).toFixed(0) + "%";
+            updateBatteryIcon(data.battery);
+          } else {
+            batteryWrap.classList.add("hidden");
+          }
+
+          const hasCode = !!data.hasCode;
+          const gameOver = !!data.gameOver;
+
+          const statusDot = document.getElementById("statusDot");
+          const statusDotText = document.getElementById("statusDotText");
+          if (statusDot && statusDotText) {
+            if (remaining > 0 && !gameOver) {
+              statusDot.className = "status-dot running";
+              statusDotText.textContent = "Running";
+            } else if (gameOver) {
+              statusDot.className = "status-dot over";
+              statusDotText.textContent = "Game over";
+            } else {
+              statusDot.className = "status-dot idle";
+              statusDotText.textContent = "Idle";
+            }
+          }
+
+          relocateBtn.disabled = gameOver || remaining <= 0 || !hasCode;
+
+          if (hasCode) {
+            actionBtn.style.display = "";
+            actionBtn.disabled = false;
+            if (remaining > 0 && !gameOver) {
+              actionBtn.textContent = "End game";
+              actionBtn.className = "btn btn-end";
+            } else {
+              actionBtn.textContent = "Play";
+              actionBtn.className = "btn btn-play";
+            }
+          } else {
+            actionBtn.style.display = "none";
+          }
+
+          if (gameOver) {
+            statusEl.textContent = "Game ended. Final score shown above.";
+          } else if (remaining > 0) {
+            statusEl.textContent = "";
+          } else if (hasCode) {
+            statusEl.textContent = "Ready. Click Play to start.";
+          } else {
+            statusEl.textContent = "Upload your controller to start a run.";
+          }
+
+          const scoreLog = data.scoreLog || [];
+          if (scoreLog.length > 0) {
+            scoreLogBlock.style.display = "block";
+            scoreLogBlock.innerHTML = "Score changes:<br>" + scoreLog.map(function (e) {
+              const pts = e.points;
+              const sign = pts >= 0 ? "+" : "";
+              const label = e.source === "boost" ? "Boost" : "Relocate";
+              const cls = pts >= 0 ? "score-log-plus" : "score-log-minus";
+              return "<span class=\"score-log-item " + cls + "\">" + label + " " + sign + pts + "</span>";
+            }).join("");
+          } else {
+            scoreLogBlock.style.display = "none";
+          }
+
+          const roomPcts = data.roomPcts || {};
+          const currentRoom = data.currentRoom ?? -1;
+          if (Object.keys(roomPcts).length > 0) {
+            roomStatsBlock.classList.remove("hidden");
+            const ids = Object.keys(roomPcts).map(Number).sort(function (a, b) { return a - b; });
+            roomStatsBlock.innerHTML = ids.map(function (r) {
+              const pct = roomPcts[r] != null ? Math.max(0, Math.min(100, roomPcts[r])) : 0;
+              const isCurrent = r === currentRoom;
+              return "<div class=\"room-card" + (isCurrent ? " current" : "") + "\">" +
+                "<div class=\"room-card-label\">Room " + r + "</div>" +
+                "<div class=\"room-card-value\">" + pct.toFixed(1) + "%</div>" +
+                "<div class=\"room-card-bar\"><div class=\"room-card-bar-fill\" style=\"width:" + pct + "%\"></div></div>" +
+                "</div>";
+            }).join("");
+          } else {
+            roomStatsBlock.classList.add("hidden");
+          }
+        }
+
+        function connect() {
+          try {
+            ws = new WebSocket(wsUrl);
+          } catch (e) {
+            console.error("WebSocket create error:", e);
+            scheduleReconnect();
+            return;
+          }
+          ws.onopen = function () { reconnectDelay = 1000; };
+          ws.onmessage = function (ev) {
+            try {
+              applyState(JSON.parse(ev.data));
+            } catch (e) { console.error(e); }
+          };
+          ws.onclose = function () { ws = null; scheduleReconnect(); };
+          ws.onerror = function () { if (ws) ws.close(); };
+        }
+
+        function scheduleReconnect() {
+          setTimeout(function () {
+            connect();
+            if (reconnectDelay < maxReconnectDelay) {
+              reconnectDelay = Math.min(reconnectDelay * 2, maxReconnectDelay);
+            }
+          }, reconnectDelay);
+        }
+
+        function sendAction(action) {
+          if (ws && ws.readyState === 1) {
+            ws.send(JSON.stringify({ action: action }));
+          } else {
+            console.error("WebSocket not connected");
+          }
+        }
+
+        function uploadFile(file) {
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function () {
+            const result = reader.result;
+            const base64 = (result && result.indexOf(",") >= 0) ? result.split(",")[1] : null;
+            if (!base64 || !ws || ws.readyState !== 1) {
+              if (ws && ws.readyState !== 1) showError("Not connected. Try again.");
+              return;
+            }
+            ws.send(JSON.stringify({ action: "upload", filename: file.name || "robot.py", content: base64 }));
+            clearError();
+          };
+          reader.onerror = function () { showError("Failed to read file"); };
+          reader.readAsDataURL(file);
+        }
+
+        function showError(msg) {
+          const el = document.getElementById("errorBox");
+          if (el) { el.style.display = "block"; el.textContent = msg; }
+        }
+
+        function clearError() {
+          const el = document.getElementById("errorBox");
+          if (el) { el.style.display = "none"; el.textContent = ""; }
+        }
+
+        window.addEventListener("load", function () {
+          const uploadBtn = document.getElementById("uploadButton");
+          const codeFile = document.getElementById("codeFile");
+          const actionBtn = document.getElementById("actionButton");
+          const relocateBtn = document.getElementById("relocateButton");
+
+          uploadBtn.addEventListener("click", function () { codeFile.click(); });
+          codeFile.addEventListener("change", function () {
+            const file = codeFile.files && codeFile.files[0];
+            if (file) uploadFile(file);
+            codeFile.value = "";
+          });
+          actionBtn.addEventListener("click", function () {
+            const isEnd = actionBtn.textContent === "End game";
+            sendAction(isEnd ? "end" : "run");
+          });
+          relocateBtn.addEventListener("click", function () { sendAction("relocate"); });
+
+          connect();
+        });
+      })();
+    </script>
+  </body>
+</html>

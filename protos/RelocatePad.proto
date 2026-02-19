@@ -1,0 +1,30 @@
+#VRML_SIM R2025a utf8
+
+# Relocation pad: a purple circular marker slightly above the floor.
+# Used by the supervisor to spawn relocate pads dynamically and can also
+# be placed directly in the world file if desired.
+
+PROTO RelocatePad [
+  field SFVec3f translation 0 0 0          # Pad position in world coordinates
+  field SFString name       "RELOCATE_PAD" # Name used for cleanup (supervisor removes nodes starting with this)
+] {
+  Solid {
+    translation IS translation
+    name IS name
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColor 0.4 0.25 0.45
+          metalness 0
+          roughness 1
+        }
+        geometry Cylinder {
+          radius 0.35
+          height 0.02
+        }
+      }
+    ]
+    boundingObject NULL
+  }
+}
+

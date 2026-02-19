@@ -1,0 +1,29 @@
+#VRML_SIM R2025a utf8
+
+# Simple battery charging pad: a black square box slightly above the floor.
+# Used by the supervisor to spawn charging pads dynamically and can also
+# be placed directly in the world file if desired.
+
+PROTO BatteryPad [
+  field SFVec3f translation 0 0 0       # Pad position in world coordinates
+  field SFString name       "BATTERY_PAD"  # Name used for cleanup (supervisor removes nodes starting with this)
+] {
+  Solid {
+    translation IS translation
+    name IS name
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColor 0 0 0
+          metalness 0
+          roughness 0.4
+        }
+        geometry Box {
+          size 0.6 0.6 0.02
+        }
+      }
+    ]
+    boundingObject NULL
+  }
+}
+

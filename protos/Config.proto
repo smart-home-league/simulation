@@ -1,0 +1,21 @@
+#VRML_SIM R2025a utf8
+
+# Simple configuration node for the SmartHome / competition.
+# roomVertices is an MFNode group: add RoomPolygon { vertices [ ... ] } for each room (dynamic count).
+
+PROTO Config [
+  field SFString   subleague        "U14"          # "U14" or "U19"
+  field MFVec3f    batteryPositions [ 0 0 0 ]     # One or more battery pad positions (x, y, z)
+  field MFVec3f    relocatePositions [ 0 0 0 ]    # One or more relocate pad positions (x, y, z)
+  field MFVec3f    boostPositions   [ ]           # U14 only: boost pad positions (x, y, z), +200 pts one-time each
+  field MFNode     roomVertices [ ]               # Group of rooms: each child is RoomPolygon { vertices [ (x y 0)... ] }
+] {
+  %< fields.batteryPositions.value; fields.relocatePositions.value; >%
+  Group {
+    children [
+      Solid { name IS subleague }
+      Group { children IS roomVertices }
+    ]
+  }
+}
+

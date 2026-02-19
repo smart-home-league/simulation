@@ -1,0 +1,14 @@
+#VRML_SIM R2025a utf8
+
+# One room polygon: list of (x, y, 0) vertices in world coordinates.
+# Used as a child of Config's roomVertices group so you can add any number of rooms.
+
+PROTO RoomPolygon [
+  field SFString name       "Room"   # Unique name per instance (e.g. Room0, Room1) to avoid sibling name warning
+  field MFVec3f  vertices [ 0 0 0 ]
+] {
+  %< fields.vertices.value; >%
+  Solid {
+    name IS name
+  }
+}

@@ -1,0 +1,27 @@
+#VRML_SIM R2025a utf8
+
+# Boost pad: 2:1 green rectangle. U14 only.
+# Robot gets +200 points when reaching (one-time per pad).
+
+PROTO BoostPad [
+  field SFVec3f translation 0 0 0       # Pad position in world coordinates
+  field SFString name       "BOOST_PAD" # Name used for cleanup
+] {
+  Solid {
+    translation IS translation
+    name IS name
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColor 0.25 0.45 0.25
+          metalness 0
+          roughness 1
+        }
+        geometry Box {
+          size 1.2 0.6 0.02
+        }
+      }
+    ]
+    boundingObject NULL
+  }
+}
