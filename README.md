@@ -34,7 +34,8 @@ pip install git+https://github.com/smart-home-league/smarthome_robot.git --break
 ## Using the Examples
 The `examples/` folder contains basic robot controller scripts. These are designed to be assigned to your robot in the Webots simulation via the Web UI. Each script demonstrates fundamental robot behaviors and interactions with the smart home environment, making them ideal starting points for students and competition participants.
 
-For more details on how to use the helper library within your code, see the README inside the `examples/` folder.
+You can access the Web UI by right-clicking on the `DEF SUPERVISOR Robot` in the left panel and selecting "Show Robot Window".
+
 
 ## Getting Started
 1. Install Webots 2025a and Python 3.12.
