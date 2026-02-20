@@ -44,7 +44,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.577350227625311 -0.5773507541296024 -0.5773498258135886 4.1887877751954585
-  position 1.9496016447036564e-05 3.1504738371398544e-05 47.79147351685246
+  position 0.001610483524335655 0.0023733240676352945 1126.6350888777363
 }
 DEF CONFIG Config {
   batteryPositions [
@@ -64,19 +64,48 @@ DEF CONFIG Config {
     RoomPolygon {
       name "Room0"
       vertices [
-        -10 -10 0
-        -1 -10 0
-        -1 10 0
         -10 10 0
+        -2.9 10 0
+        -2.9 1.5 0
+        -10 1.5 0
       ]
     }
     RoomPolygon {
       name "Room1"
       vertices [
-        -1 -10 0
-        10 -10 0
+        -2.9 10 0
+        6.7 10 0
+        6.7 1.5 0
+        -2.9 1.5 0
+      ]
+    }
+    RoomPolygon {
+      name "Room2"
+      vertices [
+        6.7 10 0
         10 10 0
-        -1 10 0
+        10 1.5 0
+        6.7 1.5 0
+      ]
+    }
+    RoomPolygon {
+      name "Room3"
+      vertices [
+        -10 1.5 0
+        10 1.5 0
+        10 -10 0
+        -2.9 -10 0
+        -2.9 -3.5 0
+        -10 -3.5 0
+      ]
+    }
+    RoomPolygon {
+      name "Room4"
+      vertices [
+        -10 -3.5 0
+        -2.9 -3.5 0
+        -2.9 -10 0
+        -10 -10 0
       ]
     }
   ]
@@ -307,10 +336,10 @@ DEF HOUSE Group {
       name "RELOCATE_PAD(3)"
     }
     BoostPad {
-      translation -5 0 0
+      translation 9 -1 0.0442
     }
     BoostPad {
-      translation 9.2 -1.04 0
+      translation -9 -1 0.0442
       name "BOOST_PAD(1)"
     }
   ]
