@@ -203,6 +203,10 @@ cython_debug/
 .DS_Store
 .ds_store
 
+# Webots simulation files
+worlds/.*.jpg
+worlds/.*.wbproj
+
 .cursorignore
 .cursorindexingignore
 
