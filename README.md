@@ -44,8 +44,16 @@ You can access the Web UI by right-clicking on the `DEF SUPERVISOR Robot` in the
 4. Assign a controller from the `examples/` folder to your robot using the Webots Web UI.
 5. Run the simulation and start exploring smart home robotics!
 
+
+## Physics plugin build
+This project includes two prebuilt physics plugin binaries:
+- **macOS** build targeting Apple M‑series (arm64) only.
+- **Windows** build for 64‑bit CPUs.
+
+To build the plugin locally, open the plugin C source file (plugins/physics/create_2d/create_2d.c) in Webots' built-in text editor and click the "Build current project" (gear icon) in the editor toolbar; Webots will compile the plugin for your current platform.
+
+
 ## Join the Community
 Become part of the Smart Home League and help shape the future of smart living. Whether you’re just starting out or looking to test your skills, there’s a place for you here.
 
 Visit our website for more information, resources, and updates: [https://smarthomerobot.ir/](https://smarthomerobot.ir/)
-
