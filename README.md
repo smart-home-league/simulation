@@ -53,6 +53,10 @@ This project includes two prebuilt physics plugin binaries:
 To build the plugin locally, open the plugin C source file (plugins/physics/create_2d/create_2d.c) in Webots' built-in text editor and click the "Build current project" (gear icon) in the editor toolbar; Webots will compile the plugin for your current platform.
 
 
+## Display Overlays
+The robot camera, ground display, and televisions may produce overlay images that appear in the robot's 3D view window. To hide these overlays, use the `Overlays` menu on the top bar of the Webots window and select `Hide All Display Overlays`.
+
+
 ## Join the Community
 Become part of the Smart Home League and help shape the future of smart living. Whether you’re just starting out or looking to test your skills, there’s a place for you here.
 
