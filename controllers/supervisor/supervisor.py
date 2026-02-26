@@ -437,14 +437,18 @@ class Supervisor(BaseSupervisor):
         # Webots HUD label
         if not self.is_running:
             label_text = (
+                f"Team: {self.robot_team_name} ({self.config.subleague})\n" if self.robot_team_name else ""
                 f"Game over: {total_score} pts\n"
                 f"{cleaned_ratio * 100:.1f}% cleaned"
             )
         else:
-            label_text = (
-                f"Cleaning: {cleaned_ratio * 100:.1f}%\n"
-                f"Time left: {remaining:.1f}s"
-            )
+            label_text = f"Team: {self.robot_team_name} ({self.config.subleague})\n" if self.robot_team_name else ""
+            label_text += f"Score: {total_score} pts\n"
+            if self.config.subleague == "U19":
+                label_text += f"Battery: {self.battery_level:.1f}%\n"
+            if self.config.subleague in ["U14", "FS"] and self.room_grid is not None:
+                label_text += f"Room {current_room}: {room_pcts[current_room][1]:.1f}%\n"
+            label_text += f"Time left: {remaining:.1f}s"
         self.setLabel(
             0,
             label_text,
