@@ -17,6 +17,7 @@ import threading
 import time
 from pathlib import Path
 from socketserver import ThreadingTCPServer
+from typing import Dict, Optional, Tuple
 from urllib.parse import urlparse
 
 
@@ -33,7 +34,7 @@ class _SharedState:
         self.team_name: str = ""
         self.points: int = 0
         self.percent: float = 0.0
-        self.last_upload_filename: str | None = None
+        self.last_upload_filename: Optional[str] = None
         self.new_code_available: bool = False
         self.run_requested: bool = False
         self.relocate_requested: bool = False
@@ -42,7 +43,7 @@ class _SharedState:
         self.room_pcts: dict = {}
         self.current_room: int = -1
         self.score_log: list = []
-        self.battery: float | None = None  # U19 only; None = hide
+        self.battery: Optional[float] = None  # U19 only; None = hide
         self.end_requested: bool = False
         self.subleague: str = ""
 
@@ -61,7 +62,7 @@ def update_score(
     percent: float,
     remaining_seconds: float,
     game_over: bool,
-    score_log: list | None = None,
+    score_log: Optional[list] = None,
 ) -> None:
     """Update current score and run status (called from supervisor loop)."""
     with _STATE.lock:
@@ -78,7 +79,7 @@ def set_team_name(name: str) -> None:
         _STATE.team_name = (name or "").strip()
 
 
-def set_battery(battery: float | None) -> None:
+def set_battery(battery: Optional[float]) -> None:
     """Set battery level for U19; None hides the battery (U14)."""
     with _STATE.lock:
         _STATE.battery = float(battery) if battery is not None else None
@@ -169,7 +170,7 @@ def _ws_send_text(sock: socket.socket, payload: bytes) -> None:
     sock.sendall(header + payload)
 
 
-def _ws_recv_frame(sock: socket.socket) -> tuple[int, bytes] | None:
+def _ws_recv_frame(sock: socket.socket) -> Optional[Tuple[int, bytes]]:
     """
     Read one WebSocket frame. Returns (opcode, payload) or None on close/error.
     Opcode 1 = text, 8 = close.
@@ -217,7 +218,7 @@ def _ws_recv_frame(sock: socket.socket) -> tuple[int, bytes] | None:
 _ws_clients: set[socket.socket] = set()
 _ws_clients_lock = threading.Lock()
 # Last state we sent over WebSocket; only broadcast when state actually changes.
-_last_broadcast_json: str | None = None
+_last_broadcast_json: Optional[str] = None
 _broadcast_lock = threading.Lock()
 
 # Path to dashboard HTML (same directory as this module).
@@ -242,7 +243,7 @@ def _handle_http_get(conn: socket.socket, path: str) -> None:
     )
 
 
-def _apply_upload(content_b64: str, filename: str) -> str | None:
+def _apply_upload(content_b64: str, filename: str) -> Optional[str]:
     """
     Decode base64 content, write to robot/robot.py, update state.
     Returns the saved filename on success, None on failure.
@@ -293,7 +294,7 @@ def _http_response(
     conn.sendall(headers.encode("utf-8") + body)
 
 
-def _read_headers(conn: socket.socket) -> tuple[str, str, dict[str, str], bytes] | None:
+def _read_headers(conn: socket.socket) -> Optional[Tuple[str, str, Dict[str, str], bytes]]:
     """
     Read request line and headers; return (method, path, headers, body_prefix)
     or None. body_prefix is any bytes already read after \\r\\n\\r\\n (for POST).
@@ -327,7 +328,7 @@ def _read_body(
     conn: socket.socket,
     content_length: int,
     prefix: bytes = b"",
-) -> bytes | None:
+) -> Optional[bytes]:
     """Read exactly content_length bytes from conn; prefix is already-read bytes."""
     if content_length < 0 or content_length > 10 * 1024 * 1024:
         return None
