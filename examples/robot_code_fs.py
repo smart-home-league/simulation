@@ -8,7 +8,7 @@ Requires: pip install smarthome-robot (or from GitHub)
 import math
 import random
 import sys
-from smarthome_robot import RobotU14
+from smarthome_robot import RobotFS
 
 DISTANCE_LOW = 0.5  # Turn when raw value below this (low = near edge; 70/50≈1.4, 110/50≈2.2 from ref)
 FLOOR_DUSTY_THRESHOLD = 220
@@ -17,7 +17,7 @@ HALF_SPEED = 12.5
 WHEEL_RADIUS = 0.031
 AXLE_LENGTH = 0.271756
 
-robot = RobotU14(team_name="First Step Example")
+robot = RobotFS(team_name="First Step Example")
 robot.led_on = True
 
 
