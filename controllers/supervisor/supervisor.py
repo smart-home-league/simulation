@@ -431,7 +431,7 @@ class Supervisor(BaseSupervisor):
                 except Exception:
                     pass
 
-        total_score = int(cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
+        total_score = 1000 + int(cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
             e["points"] for e in (self.score_log or [])
         )
         # Webots HUD label
