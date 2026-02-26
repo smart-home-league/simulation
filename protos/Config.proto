@@ -4,7 +4,7 @@
 # roomVertices is an MFNode group: add RoomPolygon { vertices [ ... ] } for each room (dynamic count).
 
 PROTO Config [
-  field SFString   subleague        "U14"          # "U14" or "U19"
+  field SFString   subleague        "U14"          # "U14", "FS" or "U19"
   field MFVec3f    batteryPositions [ 0 0 0 ]     # One or more battery pad positions (x, y, z)
   field MFVec3f    relocatePositions [ 0 0 0 ]    # One or more relocate pad positions (x, y, z)
   field MFVec3f    boostPositions   [ ]           # U14 only: boost pad positions (x, y, z), +200 pts one-time each

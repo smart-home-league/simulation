@@ -17,7 +17,7 @@ PROTO Create [
   field SFBool     synchronization TRUE                     # Is `Robot.synchronization`.
   field MFNode     bodySlot        []                       # Extends the robot with new nodes in the body slot.
   field SFString   teamName        ""
-  field SFString   subleague       "U14"                    # "U14" or "U19"
+  field SFString   subleague       "U14"                    # "U14", "FS" or "U19"
   field SFString   data            "{}"
 ]
 {
@@ -537,7 +537,7 @@ Robot {
       ]
     }
 
-    %< if (fields.subleague.value == 'U14') { >%
+    %< if (['U14', 'FS'].includes(fields.subleague.value)) { >%
     DEF CREATE_GROUND_COLOR_SENSOR Camera {
       translation 0.14 0 -0.02
       rotation 1 0 0 1.5708

@@ -38,7 +38,7 @@ class SupervisorConfig:
     """The time step for the simulation in milliseconds."""
     robot_translation: Tuple[float, float, float] = (1.8761, -6.3738, 0.0442)
     """The translation of the robot."""
-    subleague: Optional[Union[Literal["U14"], Literal["U19"]]] = None
+    subleague: Optional[Union[Literal["U14"], Literal["U19"], Literal["FS"]]] = None
     """The subleague of the competition."""
     ground_size: Optional[Tuple[int, int]] = None
     """The size of the ground in pixels."""
@@ -184,7 +184,7 @@ class Supervisor(BaseSupervisor):
             [False for _ in range(self.config.ground_size[X] // self.config.ground_cell_size)] 
             for _ in range(self.config.ground_size[Y] // self.config.ground_cell_size)
         ]
-        if self.config.subleague == "U14" and self.config.room_polygons:
+        if self.config.subleague in ["U14", "FS"] and self.config.room_polygons:
             self.room_grid = self._make_room_grid()
         else:
             self.room_grid = None
@@ -252,7 +252,7 @@ class Supervisor(BaseSupervisor):
                 )
                 children_field.importMFNodeFromString(-1, pad_string)
 
-        if self.config.subleague == "U14" and self.config.boost_positions:
+        if self.config.subleague in ["U14", "FS"] and self.config.boost_positions:
             for pad_x, pad_y, pad_z in self.config.boost_positions:
                 pad_string = (
                     'BoostPad { '
@@ -568,7 +568,7 @@ class Supervisor(BaseSupervisor):
             remaining = max(0.0, self.config.run_time_limit - elapsed)
             if self.config.subleague == "U19":
                 self._update_battery(translation, self.config.time_step / 1000.0)
-            elif self.config.subleague == "U14":
+            elif self.config.subleague in ["U14", "FS"]:
                 self._update_boost(translation)
             if remaining <= 0.0 and self.is_running:
                 self._remove_robot()

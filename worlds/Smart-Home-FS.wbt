@@ -47,6 +47,7 @@ Viewpoint {
   position 2.18845199411134e-05 3.502044394589757e-05 49.41111020920544
 }
 DEF CONFIG Config {
+  subleague "FS"
   batteryPositions [
     5 5 0
   ]
