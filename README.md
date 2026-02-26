@@ -22,13 +22,13 @@ The Smart Home League is dedicated to inspiring the next generation of innovator
 The example controllers rely on a helper library to simplify robot programming. To install it, run:
 
 ```bash
-pip install git+https://github.com/smart-home-league/smarthome_robot.git
+pip install smarthome_robot
 ```
 
 If you encounter permission issues, you may use:
 
 ```bash
-pip install git+https://github.com/smart-home-league/smarthome_robot.git --break-system-packages
+pip install smarthome_robot --break-system-packages
 ```
 
 ## Using the Examples
