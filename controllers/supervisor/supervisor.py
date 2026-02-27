@@ -147,10 +147,16 @@ class RoomGrid:
 
 class Supervisor(BaseSupervisor):
     is_running: Optional[bool] = None
+
+    # 
     robot: Optional[Node] = None
     robot_team_name: Optional[str] = None
     battery_level: float = 100.0
     cleaned_squares_count: int = 0
+    cleaned_ratio: float = 0
+    current_room: int = -1
+    room_pcts: List[Tuple[int, float]] = []
+    
     start_time: Optional[float] = None
     last_update_time: float = 0.0
     used_boost_pads: List[bool] = None
@@ -407,11 +413,16 @@ class Supervisor(BaseSupervisor):
             self.is_running = False
 
 
-    def _update_data(self, cleaned_ratio: float, remaining: float, current_room: int, room_pcts: List[Tuple[int, float]]):
+    def _update_data(self):
         """Send JSON to robot and update web dashboard (throttled in run loop)."""
+
+        now = self.getTime()
+        elapsed = now - (self.start_time or now)
+        remaining = max(0.0, self.config.run_time_limit - elapsed)
+
         # Room stats for dashboard
         if self.room_grid is not None:
-            set_room_stats({r: pct for r, pct in room_pcts}, current_room)
+            set_room_stats({r: pct for r, pct in self.room_pcts}, self.current_room)
 
         # JSON payload for robot
         if self.robot is not None:
@@ -420,8 +431,8 @@ class Supervisor(BaseSupervisor):
                 payload["battery"] = round(self.battery_level, 2)
             if self.room_grid is not None:
                 payload["roomNumbers"] = list(range(len(self.room_grid.total_cells)))
-                payload["roomPcts"] = {r: round(pct, 2) for r, pct in room_pcts}
-                payload["currentRoom"] = current_room
+                payload["roomPcts"] = {r: round(pct, 2) for r, pct in self.room_pcts}
+                payload["currentRoom"] = self.current_room
             if self.robot_team_name:
                 payload["team"] = self.robot_team_name
             if payload:
@@ -431,7 +442,7 @@ class Supervisor(BaseSupervisor):
                 except Exception:
                     pass
 
-        total_score = 1000 + int(cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
+        total_score = 1000 + int(self.cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
             e["points"] for e in (self.score_log or [])
         )
         # Webots HUD label
@@ -439,7 +450,7 @@ class Supervisor(BaseSupervisor):
             label_text = (
                 f"Team: {self.robot_team_name} ({self.config.subleague})\n" if self.robot_team_name else ""
                 f"Game over: {total_score} pts\n"
-                f"{cleaned_ratio * 100:.1f}% cleaned"
+                f"{self.cleaned_ratio * 100:.1f}% cleaned"
             )
         else:
             label_text = f"Team: {self.robot_team_name} ({self.config.subleague})\n" if self.robot_team_name else ""
@@ -447,7 +458,7 @@ class Supervisor(BaseSupervisor):
             if self.config.subleague == "U19":
                 label_text += f"Battery: {self.battery_level:.1f}%\n"
             if self.config.subleague in ["U14", "FS"] and self.room_grid is not None:
-                label_text += f"Room {current_room}: {room_pcts[current_room][1]:.1f}%\n"
+                label_text += f"Room {self.current_room}: {self.room_pcts[self.current_room][1]:.1f}%\n"
             label_text += f"Time left: {remaining:.1f}s"
         self.setLabel(
             0,
@@ -462,7 +473,7 @@ class Supervisor(BaseSupervisor):
 
         # Dashboard score/time
         set_battery(self.battery_level if self.config.subleague == "U19" else None)
-        update_score(total_score, cleaned_ratio * 100.0, remaining, self.is_running == False, self.score_log or [])
+        update_score(total_score, self.cleaned_ratio * 100.0, remaining, self.is_running == False, self.score_log or [])
 
 
     def _remove_robot(self) -> None:
@@ -523,6 +534,7 @@ class Supervisor(BaseSupervisor):
         self._last_wiggle_reset = 0.0
 
         self._add_robot()
+        self._update_data()
 
 
     def run(self):
@@ -542,8 +554,8 @@ class Supervisor(BaseSupervisor):
             # Handle End button
             if self.is_running and consume_end_request():
                 total_squares = len(self.ground_grid) * len(self.ground_grid[0])
-                cleaned_ratio = self.cleaned_squares_count / total_squares if total_squares > 0 else 0.0
-                total_score = int(cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
+                self.cleaned_ratio = self.cleaned_squares_count / total_squares if total_squares > 0 else 0.0
+                total_score = int(self.cleaned_ratio * 100.0 * self.config.points_per_percent) + sum(
                     e["points"] for e in (self.score_log or [])
                 )
                 self._remove_robot()
@@ -564,8 +576,8 @@ class Supervisor(BaseSupervisor):
                 set_team_name(team_name)
 
             # Cleaning and room stats
-            cleaned_ratio = self._update_cleaning(translation)
-            current_room, room_pcts = self._update_room_cleaning(translation)
+            self.cleaned_ratio = self._update_cleaning(translation)
+            self.current_room, self.room_pcts = self._update_room_cleaning(translation)
 
             # Time and battery / game-over logic
             elapsed = now - (self.start_time or now)
@@ -580,7 +592,7 @@ class Supervisor(BaseSupervisor):
 
             # JSON + dashboard throttled to ~1 Hz
             if self.last_update_time == 0.0 or now - self.last_update_time >= 1.0:
-                self._update_data(cleaned_ratio, remaining, current_room, room_pcts)
+                self._update_data()
                 self.last_update_time = now
 
 
