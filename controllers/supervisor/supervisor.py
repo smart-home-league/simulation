@@ -433,12 +433,12 @@ class Supervisor(BaseSupervisor):
                 payload["roomNumbers"] = list(range(len(self.room_grid.total_cells)))
                 payload["roomPcts"] = {r: round(pct, 2) for r, pct in self.room_pcts}
                 payload["currentRoom"] = self.current_room
-            if self.robot_team_name:
-                payload["team"] = self.robot_team_name
             if payload:
                 try:
-                    data_field = self.robot.getField("customData")
-                    data_field.setSFString(json.dumps(payload))
+                    raw = self.robot.getCustomData()
+                    data = json.loads(raw)
+                    data.update(payload)
+                    self.robot.setCustomData(json.dumps(data))
                 except Exception:
                     pass
 
