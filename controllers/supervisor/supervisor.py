@@ -560,7 +560,7 @@ class Supervisor(BaseSupervisor):
                 )
                 self._remove_robot()
                 set_battery(None)
-                update_score(total_score, cleaned_ratio * 100.0, 0.0, True, self.score_log or [])
+                update_score(total_score, self.cleaned_ratio * 100.0, 0.0, True, self.score_log or [])
 
             if not self.is_running or self.robot is None:
                 continue
