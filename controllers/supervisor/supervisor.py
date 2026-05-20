@@ -457,7 +457,7 @@ class Supervisor(BaseSupervisor):
             label_text += f"Score: {total_score} pts\n"
             if self.config.subleague == "U19":
                 label_text += f"Battery: {self.battery_level:.1f}%\n"
-            if self.config.subleague in ["U14", "FS"] and self.room_grid is not None:
+            if self.config.subleague in ["U14", "FS"] and self.room_grid is not None and self.room_pcts:
                 label_text += f"Room {self.current_room}: {self.room_pcts[self.current_room][1]:.1f}%\n"
             label_text += f"Time left: {remaining:.1f}s"
         self.setLabel(
