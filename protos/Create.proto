@@ -557,7 +557,6 @@ Robot {
 
     DEF CREATE_IMU InertialUnit {
       translation 0 0 0.05
-      rotation 0 0 1 -1.5708
       name "inertial unit"
     }
     %< } >%
