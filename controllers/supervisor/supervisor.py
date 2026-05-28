@@ -435,10 +435,11 @@ class Supervisor(BaseSupervisor):
                 payload["currentRoom"] = self.current_room
             if payload:
                 try:
-                    raw = self.robot.getCustomData()
-                    data = json.loads(raw)
+                    data_field = self.robot.getField("customData")
+
+                    data = json.loads(data_field.getSFString())
                     data.update(payload)
-                    self.robot.setCustomData(json.dumps(data))
+                    data_field.setSFString(json.dumps(data))
                 except Exception:
                     pass
 
