@@ -65,6 +65,8 @@ duration = 0
 rotation = False
 
 while True:
+    step()
+
     if duration > 0:
         duration -= 1
 
@@ -96,7 +98,3 @@ while True:
 
     else:
         move(MAX_SPEED, MAX_SPEED)
-
-    step()
-
-
