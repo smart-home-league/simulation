@@ -48,6 +48,7 @@ Viewpoint {
 }
 DEF CONFIG Config {
   subleague "FS"
+  spawnPoint 1.8761 -6.3738 0
   batteryPositions [
     5 5 0
   ]
