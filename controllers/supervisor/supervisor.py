@@ -36,8 +36,8 @@ class SupervisorConfig:
 
     time_step: int = 16
     """The time step for the simulation in milliseconds."""
-    robot_translation: Tuple[float, float, float] = (1.8761, -6.3738, 0.0442)
-    """The translation of the robot."""
+    spawn_point: Tuple[float, float] = (0.0, 0.0)
+    """The spawn point of the robot."""
     subleague: Optional[Union[Literal["U14"], Literal["U19"], Literal["FS"]]] = None
     """The subleague of the competition."""
     ground_size: Optional[Tuple[int, int]] = None
@@ -78,6 +78,15 @@ class SupervisorConfig:
         subleague_field = node.getField("subleague")
         if subleague_field is not None:
             config.subleague = subleague_field.getSFString().strip()
+
+        spawn_point_field = node.getField("spawnPoint")
+        if spawn_point_field is not None:
+            try:
+                spawn_point = spawn_point_field.getSFVec2f()
+                config.spawn_point = (float(spawn_point[0]), float(spawn_point[1]))
+            except Exception:
+                print("Warning: spawnPoint field is not a valid SFVec2f; using default")
+                config.spawn_point = (0.0, 0.0)
 
         battery_field = node.getField("batteryPositions")
         if battery_field is not None:
@@ -275,7 +284,7 @@ class Supervisor(BaseSupervisor):
 
         robot_string = (
             'DEF VACUUM Create { '
-            f'  translation {self.config.robot_translation[X]} {self.config.robot_translation[Y]} {self.config.robot_translation[Z]} '
+            f'  translation {self.config.spawn_point[X]} {self.config.spawn_point[Y]} 0.0442 '
             '  rotation 0 0 1 0 '
             '  controller "robot" '
             f'  subleague "{self.config.subleague}" '
@@ -303,17 +312,8 @@ class Supervisor(BaseSupervisor):
             if team:
                 return str(team).strip()
         except (json.JSONDecodeError, TypeError):
-            pass
-
-        # Legacy formats: "team:Name" or "..., team:Name, ..."
-        if raw.startswith("team:"):
-            return raw.split(":", 1)[1].strip()
-        for part in raw.split(","):
-            part = part.strip()
-            if part.startswith("team:"):
-                return part.split(":", 1)[1].strip()
-
-        return None
+            print("Warning: robot customData is not valid JSON or missing fields")
+            return None
 
 
     def _update_cleaning(self, translation: Tuple[float, float, float]) -> float:
