@@ -555,12 +555,11 @@ Robot {
       name "gps"
     }
     %< } >%
-    %< if (['U19', 'U14'].includes(fields.subleague.value)) { >%
+
     DEF CREATE_IMU InertialUnit {
       translation 0 0 0.05
       name "inertial unit"
     }
-    %< } >%
 
     DEF CREATE_CLIFF_SENSOR_FRONT_LEFT DistanceSensor {
       translation 0.15 0.05 0.02
