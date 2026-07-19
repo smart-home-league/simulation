@@ -14,6 +14,11 @@ The Smart Home League is dedicated to inspiring the next generation of innovator
 - **protos/**: Custom Webots PROTO files for smart home elements.
 - **worlds/**: Webots world files for different competition scenarios.
 
+## Competition Map
+The [liteview](https://github.com/smart-home-league/simulation/tree/liteview) branch contains the competition world/map used for the event. This is the same environment that was provided to competition participants.
+
+For detailed rules and explanations, see [smart-home-rules-explanation.pdf](https://github.com/smart-home-league/simulation/blob/main/smart-home-rules-explanation.pdf) in the project root.
+
 ## Requirements
 - **Webots 2025a**
 - **Python 3.12** (recommended)
